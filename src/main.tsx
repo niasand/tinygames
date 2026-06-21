@@ -5,6 +5,7 @@ import '@mantine/core/styles.css'
 import { createTheme, MantineProvider } from '@mantine/core'
 import { ModalsProvider } from '@mantine/modals'
 
+import { AuthProvider } from './context/AuthContext'
 import './styles.css'
 import App from './App.tsx'
 
@@ -23,7 +24,9 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <MantineProvider theme={theme}>
       <ModalsProvider>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </ModalsProvider>
     </MantineProvider>
   </StrictMode>,

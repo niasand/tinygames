@@ -8,12 +8,14 @@ import { IconArrowNarrowRight, IconReload, IconShare3 } from '@tabler/icons-reac
 
 import styles from './GameCompleteModal.module.css'
 import Board from './Board'
+import { useLeaderboard } from '../hooks/useLeaderboard'
 import { Move } from '@/types/Move'
 
 interface GameCompleteModalProps {
   show: boolean
   flawless: boolean
   time: number
+  seed?: string
   gameBoard?: string
   gameConstraints?: string
   gameMoves?: Move[]
@@ -22,7 +24,7 @@ interface GameCompleteModalProps {
   onShare: () => void
 }
 
-const GameCompleteModal = ({ show, flawless, time, gameBoard, gameConstraints, gameMoves, onReplay, onNext, onShare } : GameCompleteModalProps) => {
+const GameCompleteModal = ({ show, flawless, time, seed, gameBoard, gameConstraints, gameMoves, onReplay, onNext, onShare } : GameCompleteModalProps) => {
   const theme = useMantineTheme()
   const fullScreen = useMatches({
     base: true,
@@ -35,6 +37,8 @@ const GameCompleteModal = ({ show, flawless, time, gameBoard, gameConstraints, g
 
   const ref = useRef<HTMLDivElement>(null)
   const colors = useMemo(() => Object.values(theme.colors).flat(), [theme.colors])
+  const { rows: leaderboardRows } = useLeaderboard(seed)
+  const myRank = leaderboardRows.find(row => row.is_current_user)?.rank
   const [showing, setShowing] = useState(false)
   const [displayedFlawless, setDisplayedFlawless] = useState(flawless)
   const [displayedGameBoard, setDisplayedGameBoard] = useState(gameBoard)
@@ -129,6 +133,10 @@ const GameCompleteModal = ({ show, flawless, time, gameBoard, gameConstraints, g
           }
 
           <Text fz="6em" fw={900} lh="normal">{ format(time * 1000) }</Text>
+
+          {myRank && (
+            <Text size="md" opacity={0.9}>Your rank: #{myRank}</Text>
+          )}
         </Stack>
 
         {

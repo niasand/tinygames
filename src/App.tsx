@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { ActionIcon, Anchor, Button, Container, Paper, Stack, Text, Title } from '@mantine/core'
+import { ActionIcon, Anchor, Button, Container, Group, Paper, Stack, Text, Title } from '@mantine/core'
 import { useListState } from '@mantine/hooks'
 import { IconBrandGithubFilled, IconReload } from '@tabler/icons-react'
 
+import AccountButton from './components/AccountButton'
 import Game from './components/Game'
 import useHash from './hooks/useHash'
 import { newHash } from './utils/hash'
@@ -41,7 +42,10 @@ function App() {
   return (
     <Container size="xs">
       <Stack mih="100dvh" align="center" justify="center" ta="center" py="xl">
-        <Title order={1} mb="lg">Tango Unlimited</Title>
+        <Group justify="space-between" w="100%" mb="lg">
+          <Title order={1}>Tango Unlimited</Title>
+          <AccountButton />
+        </Group>
         <Game seeds={seeds} onNext={handleNext} />
         <Text size="lg" fw={700}>Tango, now truly unlimited!</Text>
         <Text>All boards are randomly generated - no two are the same! To return to this board, save the link.</Text>

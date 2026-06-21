@@ -7,8 +7,10 @@ import { modals } from '@mantine/modals'
 import Board from './Board'
 import GameCompleteModal from './GameCompleteModal'
 import Timer from './Timer'
+import { useAuth } from '../hooks/useAuth'
 import useGame from '../hooks/useGame'
 import useMap from '../hooks/useMap'
+import { useSubmitScore } from '../hooks/useSubmitScore'
 import { ToggleDirection } from '@/types/ToggleDirection'
 import { Move } from '@/types/Move'
 
@@ -20,6 +22,9 @@ interface GameProps {
 const Game = ({ seeds, onNext } : GameProps) => {
   const game = useGame()
   const boards = useMap<string, string>()
+  const { user } = useAuth()
+  const userId = user?.id
+  const { submit } = useSubmitScore()
   const [loading, setLoading] = useState(true)
   const [active, setActive] = useState(false)
   const [lastTime, setLastTime] = useState(0)
@@ -107,6 +112,15 @@ const Game = ({ seeds, onNext } : GameProps) => {
       })
   }, [board, constraints, game, lastTime])
 
+  // Submit the completed board's score to Supabase. Guards on lastTime > 0
+  // because lastTime updates in a different effect than completed; the submit
+  // effect re-runs once lastTime lands. useSubmitScore dedupes by seed.
+  useEffect(() => {
+    if (completed && lastTime > 0) {
+      submit(seeds[0], lastTime, flawless, userId)
+    }
+  }, [completed, lastTime, seeds, flawless, userId, submit])
+
   const updateBoard = useCallback((i: number, direction: ToggleDirection) => {
     const cells = 'OX.'
     setBoard(board => board.slice(0, i) + cells[(cells.indexOf(board[i]) + direction + cells.length) % cells.length] + board.slice(i+1))
@@ -152,7 +166,7 @@ const Game = ({ seeds, onNext } : GameProps) => {
         <Button variant="default" onClick={handleUndo} disabled={!moves.length}>Undo</Button>
         <Button variant="default" onClick={handleClear}>Clear</Button>
       </Group>
-      <GameCompleteModal show={completed} flawless={flawless} time={lastTime} gameBoard={board} gameConstraints={constraints} gameMoves={moves} onReplay={handleClear} onNext={handlePlayAgain} onShare={handleShare} />
+      <GameCompleteModal show={completed} flawless={flawless} time={lastTime} seed={seeds[0]} gameBoard={board} gameConstraints={constraints} gameMoves={moves} onReplay={handleClear} onNext={handlePlayAgain} onShare={handleShare} />
     </>
   )
 }
