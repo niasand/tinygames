@@ -74,7 +74,7 @@ create trigger on_auth_user_created
 -- Anonymous viewers allowed: auth.uid() is null → is_current_user all false.
 create or replace function public.get_seed_leaderboard(p_seed text, p_limit int default 20)
 returns table (
-  rank            int,
+  rank            bigint,
   nickname        text,
   time_seconds    double precision,
   flawless        boolean,

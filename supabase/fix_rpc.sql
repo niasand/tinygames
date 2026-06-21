@@ -3,7 +3,7 @@
 -- Qualify the inner subquery columns with the table alias (gr.*). Idempotent.
 create or replace function public.get_seed_leaderboard(p_seed text, p_limit int default 20)
 returns table (
-  rank            int,
+  rank            bigint,
   nickname        text,
   time_seconds    double precision,
   flawless        boolean,
