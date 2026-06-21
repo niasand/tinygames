@@ -15,4 +15,10 @@ export default defineConfig({
     }
   },
   plugins: [react()],
+  optimizeDeps: {
+    // random-seedable is CommonJS; force pre-bundling so the module Web Worker
+    // (which imports it via utils/game.ts) gets an ESM build instead of hanging
+    // the ?worker_file transform in dev.
+    include: ['random-seedable'],
+  },
 })
