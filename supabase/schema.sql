@@ -94,11 +94,14 @@ begin
     r.flawless,
     (r.user_id = current_uid) as is_current_user
   from (
-    -- each user's single best time on this seed
-    select distinct on (user_id) user_id, time_seconds, flawless
-    from public.game_records
-    where seed = p_seed
-    order by user_id, time_seconds asc
+    -- each user's single best time on this seed.
+    -- Columns are table-qualified (gr.*) because the function's OUT parameter
+    -- is also named "time_seconds"; a bare "time_seconds" would be ambiguous
+    -- between the OUT-parameter variable and the table column (PG error 42702).
+    select distinct on (gr.user_id) gr.user_id, gr.time_seconds, gr.flawless
+    from public.game_records gr
+    where gr.seed = p_seed
+    order by gr.user_id, gr.time_seconds asc
   ) r
   join public.profiles p on p.id = r.user_id
   order by r.time_seconds asc
