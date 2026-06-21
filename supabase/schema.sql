@@ -72,7 +72,9 @@ create trigger on_auth_user_created
 -- ============ 4. Leaderboard RPC (security definer bypasses RLS) ============
 -- Returns aggregated, non-sensitive fields only (no emails).
 -- Anonymous viewers allowed: auth.uid() is null → is_current_user all false.
-create or replace function public.get_seed_leaderboard(p_seed text, p_limit int default 20)
+-- DROP first: create or replace cannot change a function's return type.
+drop function if exists public.get_seed_leaderboard(text, int);
+create function public.get_seed_leaderboard(p_seed text, p_limit int default 20)
 returns table (
   rank            bigint,
   nickname        text,

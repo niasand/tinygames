@@ -35,3 +35,4 @@ void (async () => {
 - **supabase-js 的所有查询返回 `PromiseLike`**，链式调用只能用 `.then`。需要 `.finally` / `.catch` 或更自然的控制流时，一律用 `async/await` 解包（IIFE 或 async 函数），**不要在 thenable 上链 `.finally`**。
 - 适用面：任何基于 `PromiseLike`/thenable 设计的 SDK（不只 supabase）都有此陷阱。
 [AI-REVIEW] Large commit detected: 2053 lines added. Consider reviewing for AI Psychosis.
+[AI-REVIEW] Large commit detected: 466 lines added. Consider reviewing for AI Psychosis.

@@ -1,7 +1,9 @@
 -- Hotfix: get_seed_leaderboard threw PG 42702 (column "time_seconds" ambiguous)
 -- because the function's OUT parameter shares the name with the table column.
 -- Qualify the inner subquery columns with the table alias (gr.*). Idempotent.
-create or replace function public.get_seed_leaderboard(p_seed text, p_limit int default 20)
+-- DROP first: create or replace cannot change a function's return type.
+drop function if exists public.get_seed_leaderboard(text, int);
+create function public.get_seed_leaderboard(p_seed text, p_limit int default 20)
 returns table (
   rank            bigint,
   nickname        text,
