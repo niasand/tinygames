@@ -36,3 +36,32 @@ void (async () => {
 - 适用面：任何基于 `PromiseLike`/thenable 设计的 SDK（不只 supabase）都有此陷阱。
 [AI-REVIEW] Large commit detected: 2053 lines added. Consider reviewing for AI Psychosis.
 [AI-REVIEW] Large commit detected: 466 lines added. Consider reviewing for AI Psychosis.
+
+## [2026-06-21] PL/pgSQL function 三连环坑（42702 / 42804 / 42P13）
+
+### 现象
+排行榜 RPC `get_seed_leaderboard` 远程调用连续报三个错，逐一修：
+1. `42702 column "time_seconds" is ambiguous` —— 函数 OUT 参数名 `time_seconds` 与表列同名。
+2. `42804 Returned type bigint does not match expected type integer` —— `row_number()` 返回 bigint，但 `rank` 声明成 int。
+3. `42P13 cannot change return type of existing function` —— `create or replace` 不能改返回类型。
+
+### 根因
+没在本地跑通 RPC 就让用户在 SQL Editor 执行，光读 SQL 看不出 PG 的类型/歧义/返回类型限制——全是运行时才暴露。
+
+### 修复
+- 子查询列加表别名限定（`gr.*`）消除 42702。
+- `returns table` 里 `rank` 声明 `bigint`（对齐 `row_number()`）消除 42804。
+- 先 `drop function if exists public.get_seed_leaderboard(text, int)` 再 `create` 消除 42P13。
+
+### 涉及文件
+- supabase/schema.sql
+- supabase/fix_rpc.sql
+
+### 验证证据
+远程 `curl .../rpc/get_seed_leaderboard -d '{"p_seed":"test12","p_limit":10}'` → `[]` HTTP 200（修复前依次是 42702 / 42804 / 42P13）。
+
+### 教训（通用铁律）
+- **PL/pgSQL function 的 DDL 必须先本地验证再交付**：用 supabase local docker 或 psql 跑通（auth.uid() 可临时 mock），不要光读 SQL 就让用户执行。OUT 参数歧义、聚合函数返回类型、create-or-replace 不能改返回类型，全是运行时才暴露。
+- OUT 参数名不要与查询的表列同名（否则函数体内裸列名歧义）；若同名，子查询列必须用表别名限定（`alias.col`）。
+- `row_number()` / `count()` 等窗口与聚合函数返回 `bigint`，对应 OUT 参数声明 `bigint`。
+- 改函数返回类型不能 `create or replace`，要先 `drop function name(arg_types)`（带参数签名避免误删重载）。
