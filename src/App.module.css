@@ -1,0 +1,65 @@
+.shell {
+    width: 100%;
+}
+
+.page {
+    justify-content: center;
+}
+
+.header {
+    gap: var(--mantine-spacing-md);
+}
+
+.title {
+    min-width: 0;
+    font-size: clamp(1.875rem, 7vw, 2.125rem);
+    line-height: 1.1;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.copy {
+    max-width: 36rem;
+    text-wrap: pretty;
+}
+
+.board-url {
+    max-width: 100%;
+    font-variant-numeric: tabular-nums;
+}
+
+.board-url-text {
+    display: block;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 30em) {
+    .page {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 22.5em) {
+    .header {
+        gap: var(--mantine-spacing-xs);
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .header :global(.mantine-Button-root) {
+        width: 2.25rem;
+        padding-inline: 0;
+    }
+
+    .header :global(.mantine-Button-label) {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+}

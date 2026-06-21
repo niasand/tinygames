@@ -21,7 +21,7 @@ const AccountButton = () => {
   if (!user) {
     return (
       <>
-        <Button variant="default" size="xs" leftSection={<IconLogin size={14} />} onClick={() => setAuthOpened(true)}>
+        <Button variant="default" size="xs" leftSection={<IconLogin size={14} />} aria-label="Sign in" onClick={() => setAuthOpened(true)}>
           Sign in
         </Button>
         <AuthModal opened={authOpened} onClose={() => setAuthOpened(false)} />

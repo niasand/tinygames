@@ -1,3 +1,15 @@
+:root {
+    --space-1: 4px;
+    --tango-surface-page: var(--mantine-color-gray-0);
+    --tango-surface-board: var(--mantine-color-white);
+    --tango-surface-cell-hover: var(--mantine-color-gray-1);
+    --tango-surface-cell-locked: var(--mantine-color-gray-0);
+    --tango-constraint-color: var(--mantine-color-gray-6);
+    --tango-focus-ring: var(--mantine-color-indigo-5);
+    --tango-z-constraint: 2;
+    --tango-z-focus: 3;
+}
+
 body {
-    background-color: var(--mantine-color-gray-0);
+    background-color: var(--tango-surface-page);
 }

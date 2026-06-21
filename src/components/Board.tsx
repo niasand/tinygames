@@ -28,6 +28,7 @@ const Board = ({ board, constraints, loading, onToggle } : BoardProps) => {
                       right={constraints[i+36] === '.' ? '' : constraints[i+36]}
                       bottom={constraints[i+72] === '.' ? '' : constraints[i+72]}
                       canToggle={constraints[i] === '.'}
+                      position={i}
                       onToggle={direction => onToggle?.(i, direction)}>{ cell }</Cell>
                   ))
                 }
